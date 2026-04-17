@@ -10,12 +10,15 @@ export default function CustomCursor() {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
-  // Springs for smooth buttery tracking
   const springConfig = { damping: 25, stiffness: 400, mass: 0.5 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
+    // Detect touch devices and hide cursor
+    const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (isTouchDevice) return;
+    
     const moveCursor = (e) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
@@ -26,7 +29,7 @@ export default function CustomCursor() {
     const handleMouseEnter = () => setIsVisible(true);
 
     const handleHoverStart = (e) => {
-      const target = e.target.closest("a, button, .cursor-hover");
+      const target = e.target.closest("a, button, .cursor-hover, input, textarea");
       if (target) {
         setIsHovered(true);
         const dataText = target.getAttribute("data-cursor-text");
@@ -50,46 +53,49 @@ export default function CustomCursor() {
     };
   }, [cursorX, cursorY, isVisible]);
 
-  // Adjust cursor size via variants without hooks
-  const variants = {
-    default: {
-      width: 24,
-      height: 24,
-      left: -12,
-      top: -12,
-      opacity: isVisible ? 1 : 0,
-      backgroundColor: "rgba(27, 142, 75, 0.2)",
-      border: "1.5px solid var(--color-brand-green)",
-      backdropFilter: "blur(2px)",
-    },
-    hover: {
-      width: hoverText ? 80 : 48,
-      height: hoverText ? 80 : 48,
-      left: hoverText ? -40 : -24,
-      top: hoverText ? -40 : -24,
-      backgroundColor: "var(--color-brand-green)",
-      border: "none",
-      opacity: isVisible ? 1 : 0,
-    },
-  };
-
   return (
-    <motion.div
-      className="fixed top-0 left-0 z-[9999] pointer-events-none rounded-full flex items-center justify-center font-display text-[10px] uppercase font-bold text-white tracking-wider"
-      style={{ x: cursorXSpring, y: cursorYSpring }}
-      variants={variants}
-      animate={isHovered ? "hover" : "default"}
-      transition={{ type: "spring", stiffness: 300, damping: 28 }}
-    >
-      {hoverText && (
-        <motion.span
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-        >
-          {hoverText}
-        </motion.span>
-      )}
-    </motion.div>
+    <>
+      {/* Main dot cursor – always visible, acts as pointer replacement */}
+      <motion.div
+        className="fixed top-0 left-0 z-[9998] pointer-events-none rounded-full"
+        style={{
+          x: cursorXSpring,
+          y: cursorYSpring,
+          width: 8,
+          height: 8,
+          marginLeft: -4,
+          marginTop: -4,
+          backgroundColor: "var(--color-brand-green)",
+          opacity: isVisible ? 1 : 0,
+        }}
+        transition={{ type: "tween", duration: 0 }}
+      />
+
+      {/* Outer ring – expands on hover */}
+      <motion.div
+        className="fixed top-0 left-0 z-[9999] pointer-events-none rounded-full flex items-center justify-center font-display text-[10px] uppercase font-bold text-white tracking-wider"
+        style={{ x: cursorXSpring, y: cursorYSpring }}
+        animate={{
+          width: isHovered ? (hoverText ? 80 : 40) : 32,
+          height: isHovered ? (hoverText ? 80 : 40) : 32,
+          marginLeft: isHovered ? (hoverText ? -40 : -20) : -16,
+          marginTop: isHovered ? (hoverText ? -40 : -20) : -16,
+          backgroundColor: isHovered ? "var(--color-brand-green)" : "rgba(27, 142, 75, 0.08)",
+          border: isHovered ? "none" : "1.5px solid var(--color-brand-green)",
+          opacity: isVisible ? 1 : 0,
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 28 }}
+      >
+        {hoverText && isHovered && (
+          <motion.span
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.05 }}
+          >
+            {hoverText}
+          </motion.span>
+        )}
+      </motion.div>
+    </>
   );
 }
