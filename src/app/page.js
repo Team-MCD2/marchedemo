@@ -1,6 +1,6 @@
 "use client";
 import CinematicHero from "@/components/sections/CinematicHero";
-import PopularCategories from "@/components/sections/PopularCategories";
+import SlidingCategories from "@/components/sections/SlidingCategories";
 import DepartmentShowcase from "@/components/animations/DepartmentShowcase";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
@@ -21,7 +21,7 @@ export default function Home() {
       <CinematicHero />
 
       <div className="relative z-10 bg-theme">
-        <PopularCategories />
+        <SlidingCategories />
       </div>
 
       {/* Decorative Spacer / Transition */}

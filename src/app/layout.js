@@ -3,7 +3,7 @@ import SmoothScrolling from "@/components/SmoothScrolling";
 import CustomCursor from "@/components/animations/CustomCursor";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import WhatsAppWidget from "@/components/layout/WhatsAppWidget";
+import ContactWidget from "@/components/layout/ContactWidget";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
           <Footer />
         </SmoothScrolling>
 
-        <WhatsAppWidget />
+        <ContactWidget />
       </body>
     </html>
   );
