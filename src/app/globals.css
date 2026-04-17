@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors - Based on Logo */
+  --color-brand-green: #1b8e4b;
+  --color-brand-green-light: #27b663;
+  --color-brand-green-dark: #126333;
+  --color-brand-green-glow: rgba(27, 142, 75, 0.35);
+  
+  --color-brand-red: #bd2c2b;
+  --color-brand-red-light: #e0413f;
+  
+  --color-secondary: #E8920F;
+  --color-secondary-light: #F5A623;
+  
+  /* Fonts */
+  --font-display: var(--font-outfit), sans-serif;
+  --font-body: var(--font-inter), sans-serif;
+
+  /* Spacing */
+  --spacing-section: clamp(4rem, 8vw, 8rem);
+  --spacing-container: clamp(1.25rem, 4vw, 3rem);
+
+  /* Shadows */
+  --shadow-glow-primary: 0 0 40px var(--color-brand-green-glow);
+  --shadow-glow-red: 0 0 30px rgba(189, 44, 43, 0.3);
+}
+
+@layer base {
+  /* LIGHT THEME (Default) */
+  :root {
+    --background: #ffffff;
+    --background-surface: #f9fbf9;
+    --background-elevated: #f0f4f1;
+    --foreground: #111412;
+    --foreground-muted: #5d6b63;
+    --border-m: rgba(0, 0, 0, 0.08);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.05);
+  }
+
+  /* DARK THEME (OS Preference) */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0A0F0D;
+      --background-surface: #121A16;
+      --background-elevated: #1A2620;
+      --foreground: #F5F0E8;
+      --foreground-muted: #9CA89F;
+      --border-m: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(18, 26, 22, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  html {
+    scroll-behavior: initial; /* Lenis takes over */
+    font-family: var(--font-body);
+    font-size: 16px;
+    background-color: var(--background);
+    color: var(--foreground);
+    cursor: none; /* Hide default for custom cursor */
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .bg-theme { background-color: var(--background); }
+  .bg-surface { background-color: var(--background-surface); }
+  .bg-elevated { background-color: var(--background-elevated); }
+  
+  .text-theme { color: var(--foreground); }
+  .text-muted { color: var(--foreground-muted); }
+
+  .border-theme { border-color: var(--border-m); }
+
+  .glass-card {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+    border-radius: 1rem;
+  }
+  
+  .glass-card:hover {
+    border-color: rgba(27, 142, 75, 0.3); /* Brand Green subtle */
+    box-shadow: var(--shadow-glow-primary);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-brand-green to-brand-green-light;
+  }
+
+  .text-gradient-red {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-brand-red to-brand-red-light;
+  }
+
+  .btn {
+    @apply inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-display font-semibold transition-all duration-300 relative overflow-hidden;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-br from-brand-green to-brand-green-light text-white shadow-glow-primary hover:-translate-y-0.5 hover:shadow-[0_0_60px_rgba(27,142,75,0.4)];
+    cursor: none;
+  }
+
+  .btn-outline {
+    @apply border-[1.5px] border-brand-green text-brand-green bg-transparent hover:bg-brand-green hover:text-white hover:border-brand-green hover:-translate-y-0.5;
+    cursor: none;
+  }
+
+  /* Cinematic Film Grain Overlay */
+  .film-grain {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    animation: grain 8s steps(10) infinite;
+  }
+
+  /* Only Dark mode gets higher grain opacity for that cinematic feel */
+  @media (prefers-color-scheme: dark) {
+    .film-grain {
+      opacity: 0.07;
+    }
+  }
+
+  @keyframes grain {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-5%, -10%); }
+    20% { transform: translate(-15%, 5%); }
+    30% { transform: translate(7%, -25%); }
+    40% { transform: translate(-5%, 25%); }
+    50% { transform: translate(-15%, 10%); }
+    60% { transform: translate(15%, 0%); }
+    70% { transform: translate(0%, 15%); }
+    80% { transform: translate(3%, 35%); }
+    90% { transform: translate(-10%, 10%); }
+  }
+}
